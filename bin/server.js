@@ -47,7 +47,7 @@ app.use(async function responseTime(ctx, next){
 
 var router = require('../app/router/router.js');
 
-// app.use(require('./app/router/api.js').routes());
+app.use(require('../app/router/api.js').routes());
 
 app
   .use(router.routes())
