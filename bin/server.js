@@ -7,8 +7,12 @@ var log4js = require('log4js');
 log4js.loadAppender('file');
 log4js.addAppender(log4js.appenders.file('logs/runtime.log'), 'runtime');
 var logger = log4js.getLogger('runtime');
+import handleMessage from '../app/middleware/handleMessage';
 
+var koaBody = require('koa-body');
+app.use(koaBody({formidable:{uploadDir: __dirname}}));
 
+app.use(handleMessage());
 
 //异常处理, 必须放在所有中间件的最前面
 app.use(async function(ctx, next){
@@ -19,7 +23,7 @@ app.use(async function(ctx, next){
 		ctx.body = err.message;
 		logger.error(err);
 	}
-})
+});
 
 
 var views = require('koa-views');
