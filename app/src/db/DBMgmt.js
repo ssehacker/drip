@@ -37,6 +37,7 @@ class DBMgmt {
         let Article = mongoose.model('Article', Schema({
             id: Schema.Types.ObjectId,
             title: String ,
+            markdown: String,
             content: String,
             tags: [],
             user: { type: Schema.Types.ObjectId, ref: 'User' },

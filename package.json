@@ -28,6 +28,7 @@
     "koa-static": "^2.0.0",
     "koa-views": "^5.0.1",
     "log4js": "^0.6.36",
+    "markdown-it": "^7.0.0",
     "mongoose": "^4.5.3",
     "source-map-support": "^0.4.0",
     "underscore": "^1.8.3"

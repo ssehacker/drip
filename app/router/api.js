@@ -8,6 +8,7 @@ import UserDao from '../src/dao/UserDao';
 
 
 var mockAnswers = require('../data/mockAnswers.js');
+var md = require('markdown-it')();
 
 const articleDao = new ArticleDao();
 const userDao = new UserDao();
@@ -27,7 +28,8 @@ router.post('/api/article', async(ctx, next)=> {
 	}
 	let body = ctx.request.body;
 	let title = body.title;
-	let content =body.content;
+	let markdown =body.content;
+	let content = md.render(markdown);
 	let viewCount = 0;
 	let tags = body.tags || [];
 
@@ -46,6 +48,7 @@ router.post('/api/article', async(ctx, next)=> {
 	await articleDao.insert({
 		title,
 		content,
+		markdown,
 		viewCount,
 		tags,
 		user: user._id
