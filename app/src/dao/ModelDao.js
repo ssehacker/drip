@@ -47,6 +47,7 @@ class ModelDao {
             records = await new Promise((resolve, reject)=>{
                 this.model
                     .find(condition, fields, options)
+                    .lean()
                     .exec((err, records)=>{
                         if(err){
                             logger.error(err);
@@ -69,6 +70,7 @@ class ModelDao {
             record = await new Promise((resolve, reject)=>{
                 this.model
                     .findOne(condition, fields, options)
+                    .lean()
                     .exec((err, record)=>{
                         if(err){
                             reject(err);

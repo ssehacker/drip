@@ -2,17 +2,18 @@
 
 var router = require('koa-router')();
 var logger = require('log4js').getLogger('runtime');
+let config = require('../src/util/loadConfig')();
 
 router.get('/', async (ctx, next) =>{
 	await ctx.render('index.jade', {
-		host: 'http://127.0.0.1:3002'
+		host: config.cdn
 	});
 });
 
 router.get('/admin', async (ctx, next) =>{
 	console.log('/admin....');
 	await ctx.render('admin.jade', {
-		host: 'http://127.0.0.1:3002'
+		host: config.cdn
 	});
 });
 

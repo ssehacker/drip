@@ -18,6 +18,7 @@ class ArticleDao extends ModelDao{
                 this.model
                     .find(condition, fields, options)
                     .populate('user')
+                    .lean()
                     .exec((err, records)=>{
                         if(err){
                             logger.error(err);

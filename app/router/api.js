@@ -8,7 +8,12 @@ import UserDao from '../src/dao/UserDao';
 
 
 var mockAnswers = require('../data/mockAnswers.js');
-var md = require('markdown-it')();
+var md = require('markdown-it')({
+	breaks: true
+});
+import _ from 'underscore';
+let config = require('../src/util/loadConfig')();
+
 
 const articleDao = new ArticleDao();
 const userDao = new UserDao();
@@ -22,7 +27,6 @@ function isQueryBodyNull(ctx){
 }
 
 router.post('/api/article', async(ctx, next)=> {
-	console.log(ctx.request.body);
 	if(isQueryBodyNull(ctx)){
 		return;
 	}
@@ -44,7 +48,6 @@ router.post('/api/article', async(ctx, next)=> {
 		});
 	}
 
-	//todo markdown to html.
 	await articleDao.insert({
 		title,
 		content,
@@ -76,9 +79,12 @@ router.get('/api/article', async(ctx, next)=>{
 
 	let articles = await articleDao.find({}, {}, {limit: pageSize, skip: pageSize * (currentPage-1)});
 
+	let defaultUri = config.cdn + '/public/noimage.gif';
+
 	articles.forEach((article)=> {
-		//todo use regex to get img uri.
-		article.preImg = 'http://girlatlas.b0.upaiyun.com/7864/20160611/1009od9d6dhp68j2h0zq.jpg!mid';
+		let regRes = article.content.match(/https?:\/\/.+\.(gif|png|jpe?g|svg)/);
+
+		article.preImg = regRes && regRes[0] || defaultUri;
 	});
 	ctx.success({
 		articles
