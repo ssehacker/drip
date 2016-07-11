@@ -10,4 +10,4 @@ module.exports = function loadConfig(){
         config = require('../config/config.prod');
     }
     return config;
-}
+};

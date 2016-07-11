@@ -29,7 +29,9 @@ class DBMgmt {
 
         let User = mongoose.model('User', Schema({
             id: Schema.Types.ObjectId,
+            nick: String,
             name: String,
+            password: String, //sha2
             createDate: {type: Number, default: Date.now()},
             lastUpdate: {type: Number, default: Date.now()}
         }));
