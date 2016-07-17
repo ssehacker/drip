@@ -5,13 +5,14 @@ var logger = require('log4js').getLogger('runtime');
 
 import ArticleDao from '../src/dao/ArticleDao';
 import UserDao from '../src/dao/UserDao';
+import Status from '../src/Status';
 
-
-var mockAnswers = require('../data/mockAnswers.js');
 var md = require('markdown-it')({
 	breaks: true
 });
 import _ from 'underscore';
+
+
 let config = require('../src/util/loadConfig')();
 
 
@@ -96,6 +97,45 @@ router.get('/api/article/:id', async(ctx, next)=> {
 	let id = ctx.params.id;
 	let article = await articleDao.findOne({_id: id});
 	ctx.success({article});
+});
+
+//todo: username should be email.
+function validateUser(username, password){
+	if(username && password && password.length>=6){
+		return true;
+	}
+	return false;
+}
+
+router.post('/api/user', async(ctx, next)=>{
+	let body = ctx.request.body;
+	let username = body.username;
+	let password = body.password;
+
+	if(!validateUser(username, password)){
+		ctx.error(Status.USER_VALIDATE_ERROR);
+		return;
+	}
+	
+	let isExist =await userDao.findOne({name: username});
+	if(isExist){
+		ctx.error(Status.USER_EXIST);
+		return;
+	}
+
+	try{
+		await userDao.insert({
+			name: username,
+			password: password
+		});
+		ctx.success();
+	}catch(e){
+		ctx.error(e);
+		return;
+	}
+
+
+
 });
 
 

@@ -17,5 +17,13 @@ router.get('/admin', async (ctx, next) =>{
 	});
 });
 
+router.get('/:userid', async (ctx, next) =>{
+	await ctx.render('theme.jade', {
+		host: config.cdn
+	});
+});
+
+
+
 
 module.exports= router;
