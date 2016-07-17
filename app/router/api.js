@@ -28,6 +28,21 @@ function isQueryBodyNull(ctx){
 }
 
 router.post('/api/article', async(ctx, next)=> {
+	if(!this.session.username){
+		ctx.error(Status.USER_AUTH_FAILED);
+		return;
+	}
+	let user = await userDao.findOne({
+		name: this.session.username
+	});
+	if(!user){
+		ctx.error(Status.USER_AUTH_FAILED);
+		return;
+	}
+
+
+	
+
 	if(isQueryBodyNull(ctx)){
 		return;
 	}
@@ -37,17 +52,6 @@ router.post('/api/article', async(ctx, next)=> {
 	let content = md.render(markdown);
 	let viewCount = 0;
 	let tags = body.tags || [];
-
-	//todo: deal with user
-	let user = await userDao.findOne({
-		name: '周勇'
-	});
-	
-	if(!user){
-		user = await userDao.insert({
-			name: '周勇'
-		});
-	}
 
 	await articleDao.insert({
 		title,
@@ -107,6 +111,10 @@ function validateUser(username, password){
 	return false;
 }
 
+function activeUser(ctx, username){
+	ctx.session.username = username;
+}
+
 router.post('/api/user', async(ctx, next)=>{
 	let body = ctx.request.body;
 	let username = body.username;
@@ -128,14 +136,32 @@ router.post('/api/user', async(ctx, next)=>{
 			name: username,
 			password: password
 		});
+
+		activeUser(ctx, username);
+
 		ctx.success();
 	}catch(e){
+		logger.error(e);
 		ctx.error(e);
 		return;
 	}
 
+});
 
+router.post('/api/login', async(ctx,next)=>{
+	let body = ctx.request.body;
+	let username = body.username;
+	let password = body.password;
 
+	//todo: password sha2
+	let user = await userDao.findOne({name: username, password: password});
+	if(!user){
+		ctx.error(Status.USER_NOT_EXIST);
+		return;
+	}
+
+	activeUser(ctx, username);
+	ctx.success();
 });
 
 

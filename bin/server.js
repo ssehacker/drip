@@ -12,6 +12,12 @@ import handleMessage from '../app/middleware/handleMessage';
 var koaBody = require('koa-body');
 app.use(koaBody({formidable:{uploadDir: __dirname}}));
 
+const session = require('koa-session');
+const convert = require('koa-convert');
+app.keys = ['secret', 'key'];
+
+app.use(convert(session(app)));
+
 app.use(handleMessage());
 
 //异常处理, 必须放在所有中间件的最前面

@@ -12,6 +12,14 @@ let status = {
         code: -102,
         msg: '该用户名已经被使用啦~'
     },
+    USER_NOT_EXIST: {
+        code: -103,
+        msg: '该用户不存在'
+    },
+    USER_AUTH_FAILED: {
+        code: -104,
+        msg: '用户未登录'
+    }
 };
 
 export default status;

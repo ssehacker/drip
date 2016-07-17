@@ -11,7 +11,9 @@ router.get('/', async (ctx, next) =>{
 });
 
 router.get('/admin', async (ctx, next) =>{
-	console.log('/admin....');
+	if(!ctx.session.username){
+		ctx.redirect('/');
+	}
 	await ctx.render('admin.jade', {
 		host: config.cdn
 	});
