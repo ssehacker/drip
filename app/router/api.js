@@ -40,9 +40,6 @@ router.post('/api/article', async(ctx, next)=> {
 		return;
 	}
 
-
-	
-
 	if(isQueryBodyNull(ctx)){
 		return;
 	}
@@ -65,10 +62,13 @@ router.post('/api/article', async(ctx, next)=> {
 	ctx.success();
 });
 
-router.get('/api/article', async(ctx, next)=>{
+router.get('/api/:userToken/article', async(ctx, next)=>{
 	if(isQueryBodyNull(ctx)){
 		return;
 	}
+
+	let username = ctx.params.userToken;
+
 	let maxPageSize = 30, defaultPageSize = 10;
 	let maxCount = await articleDao.count({});
 
@@ -82,7 +82,7 @@ router.get('/api/article', async(ctx, next)=>{
 		pageSize = defaultPageSize;
 	}
 
-	let articles = await articleDao.find({}, {}, {limit: pageSize, skip: pageSize * (currentPage-1)});
+	let articles = await articleDao.find({name: username}, {}, {limit: pageSize, skip: pageSize * (currentPage-1)});
 
 	let defaultUri = config.cdn + '/public/noimage.gif';
 
@@ -97,11 +97,28 @@ router.get('/api/article', async(ctx, next)=>{
 
 });
 
-router.get('/api/article/:id', async(ctx, next)=> {
+router.get('/api/:userToken/article/:id', async(ctx, next)=> {
+	let username = ctx.params.userToken;
 	let id = ctx.params.id;
+
 	let article = await articleDao.findOne({_id: id});
 	ctx.success({article});
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//官网模块
 
 //todo: username should be email.
 function validateUser(username, password){
@@ -115,6 +132,7 @@ function activeUser(ctx, username){
 	ctx.session.username = username;
 }
 
+//注册
 router.post('/api/user', async(ctx, next)=>{
 	let body = ctx.request.body;
 	let username = body.username;
@@ -156,7 +174,7 @@ router.post('/api/login', async(ctx,next)=>{
 	//todo: password sha2
 	let user = await userDao.findOne({name: username, password: password});
 	if(!user){
-		ctx.error(Status.USER_NOT_EXIST);
+		ctx.error(Status.AUTH_FAILED);
 		return;
 	}
 

@@ -12,9 +12,9 @@ let status = {
         code: -102,
         msg: '该用户名已经被使用啦~'
     },
-    USER_NOT_EXIST: {
+    AUTH_FAILED: {
         code: -103,
-        msg: '该用户不存在'
+        msg: '用户名或密码错误'
     },
     USER_AUTH_FAILED: {
         code: -104,
