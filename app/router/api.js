@@ -28,12 +28,12 @@ function isQueryBodyNull(ctx){
 }
 
 router.post('/api/article', async(ctx, next)=> {
-	if(!this.session.username){
+	if(!ctx.session.username){
 		ctx.error(Status.USER_AUTH_FAILED);
 		return;
 	}
 	let user = await userDao.findOne({
-		name: this.session.username
+		name: ctx.session.username
 	});
 	if(!user){
 		ctx.error(Status.USER_AUTH_FAILED);
