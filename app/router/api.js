@@ -91,7 +91,7 @@ router.get('/api/:userToken/article', async(ctx, next)=>{
 	let defaultUri = config.cdn + '/public/noimage.gif';
 
 	articles.forEach((article)=> {
-		let regRes = article.content.match(/\((https?:\/\/.+\.(gif|png|jpe?g|svg).*)\)/);
+		let regRes = article.content.match(/src=\"(https?:\/\/.+\.(gif|png|jpe?g|svg).*?)\"/);
 
 		article.preImg = regRes && regRes[1] || defaultUri;
 	});
