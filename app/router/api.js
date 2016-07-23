@@ -82,7 +82,11 @@ router.get('/api/:userToken/article', async(ctx, next)=>{
 		pageSize = defaultPageSize;
 	}
 
-	let articles = await articleDao.find({name: username}, {}, {limit: pageSize, skip: pageSize * (currentPage-1)});
+	//todo: 这里需要优化,应该直接从数据库中过滤, 而不是查出来之后再过滤,当数据量大的时候这里需要优化
+	let articles = await articleDao.find({}, {}, {limit: pageSize, skip: pageSize * (currentPage-1)});
+	articles = _.filter(articles, (article)=>{
+		return article.user.name === username;
+	});
 
 	let defaultUri = config.cdn + '/public/noimage.gif';
 
