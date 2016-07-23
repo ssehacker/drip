@@ -33,6 +33,29 @@ class ArticleDao extends ModelDao{
         }
         return records;
     }
+
+    async findOne(condition, fields, options){
+        let record;
+        try{
+            record = await new Promise((resolve, reject)=>{
+                this.model
+                    .findOne(condition, fields, options)
+                    .lean()
+                    .populate('user')
+                    .exec((err, record)=>{
+                        if(err){
+                            reject(err);
+                        }
+                        resolve(record);
+                    });
+
+            });
+        }catch(err){
+            throw err;
+        }
+        return record;
+    }
+
 }
 
 export default ArticleDao;
