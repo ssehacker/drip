@@ -85,6 +85,23 @@ class ModelDao {
         return record;
     }
 
+    async update(condition, options){
+        let res;
+        try{
+            res = await new Promise((resolve, reject)=>{
+                this.model.update(condition, options, (err, res)=>{
+                    if(err){
+                        reject(err);
+                    }
+                    resolve(res);
+                });
+            });
+        }catch(err){
+            throw err;
+        }
+        return res;
+    }
+
     async count(condition) {
         let count =0;
         try{

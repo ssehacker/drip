@@ -33,7 +33,10 @@ class DBMgmt {
             name: String,
             password: String, //todo: sha2
             photo: String, //path
-            info: String,   //一些自定义的信息,就像简历一样,用markdown编写,然后转义成html
+            desc: String,
+            resume: String, //一些自定义的信息,就像简历一样,用markdown编写,然后转义成html
+            resumeDM: String,
+            domain: String,
             createDate: {type: Number, default: Date.now()},
             lastUpdate: {type: Number, default: Date.now()}
         }));

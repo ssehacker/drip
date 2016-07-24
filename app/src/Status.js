@@ -19,6 +19,10 @@ let status = {
     USER_AUTH_FAILED: {
         code: -104,
         msg: '用户未登录'
+    },
+    USER_FORBID: {
+        code: -105,
+        msg: '用户名与当前登录用户不一致.'
     }
 };
 

@@ -11,6 +11,8 @@ router.get('/', async (ctx, next) =>{
 });
 
 router.get('/admin', async (ctx, next) =>{
+	logger.info('ctx.session.username===', ctx.session.username);
+	
 	if(!ctx.session.username){
 		ctx.redirect('/');
 	}

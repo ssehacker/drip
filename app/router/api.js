@@ -170,6 +170,56 @@ router.post('/api/user', async(ctx, next)=>{
 
 });
 
+router.put('/api/user/', async(ctx, next)=> {
+	let body = ctx.request.body;
+	let username = body.name;
+	let nick = body.nick;
+	let domain = body.domain;
+	let desc = body.desc;
+	let res;
+
+	if(username && username === ctx.session.username){
+		res = await userDao.update({name: username}, {
+			$set: {
+				nick: nick,
+				domain: domain,
+				desc: desc
+			}
+		});
+		logger.info('update res: ',res);
+		ctx.success();
+	}else{
+		ctx.error(Status.USER_FORBID);
+	}
+	
+});
+
+router.patch('/api/user', async(ctx, next)=>{
+	let body = ctx.request.body;
+	logger.info('test:====', body);
+	ctx.success();
+
+});
+
+//todo 验证用户是否登录
+router.get('/api/user', async(ctx, next)=>{
+	let username = ctx.session.username;
+	let user = await userDao.findOne({name: username},
+		{
+			name: true,
+			nick: true,
+			photo: true,
+			resume: true,
+			resumeMD: true,
+			desc: true,
+			domain:true
+		}
+	);
+	ctx.success({
+		data: user
+	});
+});
+
 router.post('/api/login', async(ctx,next)=>{
 	let body = ctx.request.body;
 	let username = body.username;
@@ -191,6 +241,7 @@ router.post('/api/logout', async(ctx,next)=>{
 	delete ctx.session.username;
 	ctx.success();
 });
+
 
 
 module.exports = router;
