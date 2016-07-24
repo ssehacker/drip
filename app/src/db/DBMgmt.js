@@ -35,7 +35,7 @@ class DBMgmt {
             photo: String, //path
             desc: String,
             resume: String, //一些自定义的信息,就像简历一样,用markdown编写,然后转义成html
-            resumeDM: String,
+            resumeMD: String,
             domain: String,
             createDate: {type: Number, default: Date.now()},
             lastUpdate: {type: Number, default: Date.now()}

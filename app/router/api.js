@@ -170,6 +170,7 @@ router.post('/api/user', async(ctx, next)=>{
 
 });
 
+//todo 验证用户是否登录
 router.put('/api/user/', async(ctx, next)=> {
 	let body = ctx.request.body;
 	let username = body.name;
@@ -186,7 +187,6 @@ router.put('/api/user/', async(ctx, next)=> {
 				desc: desc
 			}
 		});
-		logger.info('update res: ',res);
 		ctx.success();
 	}else{
 		ctx.error(Status.USER_FORBID);
@@ -194,10 +194,24 @@ router.put('/api/user/', async(ctx, next)=> {
 	
 });
 
+//todo 验证用户是否登录
 router.patch('/api/user', async(ctx, next)=>{
+	let name = ctx.session.username;
 	let body = ctx.request.body;
-	logger.info('test:====', body);
-	ctx.success();
+	let resumeMD = body.resumeMD;
+
+	try{
+		let resume = md.render(resumeMD);
+		let res = await userDao.update({name: name}, {
+			$set: {
+				resumeMD: resumeMD,
+				resume: resume
+			}
+		});
+		ctx.success();
+	}catch(err){
+		ctx.error({msg: err});
+	}
 
 });
 
