@@ -186,5 +186,11 @@ router.post('/api/login', async(ctx,next)=>{
 	ctx.success();
 });
 
+router.post('/api/logout', async(ctx,next)=>{
+	ctx.session.username = undefined;
+	delete ctx.session.username;
+	ctx.success();
+});
+
 
 module.exports = router;

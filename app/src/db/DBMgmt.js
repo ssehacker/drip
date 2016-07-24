@@ -31,7 +31,9 @@ class DBMgmt {
             id: Schema.Types.ObjectId,
             nick: String,
             name: String,
-            password: String, //sha2
+            password: String, //todo: sha2
+            photo: String, //path
+            info: String,   //一些自定义的信息,就像简历一样,用markdown编写,然后转义成html
             createDate: {type: Number, default: Date.now()},
             lastUpdate: {type: Number, default: Date.now()}
         }));
