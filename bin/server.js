@@ -41,9 +41,9 @@ app.use(views( path.resolve(__dirname , '../app/views') , {
 	}
 }));
 
-
 var serve = require('koa-static');
-app.use(serve(__dirname + '/static'));
+app.use(serve(path.resolve('uploads')));
+
 
 //koa v2
 app.use(async function responseTime(ctx, next){
@@ -62,8 +62,6 @@ app.use(require('../app/router/api.js').routes());
 app
   .use(router.routes())
   .use(router.allowedMethods());
-
-
 
 app.listen(9090);
 

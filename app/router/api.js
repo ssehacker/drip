@@ -3,9 +3,15 @@
 var router = require('koa-router')();
 var logger = require('log4js').getLogger('runtime');
 
+var Busboy = require('busboy');
+
+import asyncBusboy from 'async-busboy';
+
 import ArticleDao from '../src/dao/ArticleDao';
 import UserDao from '../src/dao/UserDao';
 import Status from '../src/Status';
+import path from 'path';
+import fs from 'fs';
 
 var md = require('markdown-it')({
 	breaks: true
@@ -254,6 +260,54 @@ router.post('/api/logout', async(ctx,next)=>{
 	ctx.session.username = undefined;
 	delete ctx.session.username;
 	ctx.success();
+});
+
+//上传图片
+router.post('/api/upload/photo', async(ctx, next)=> {
+
+	let photoPath = await new Promise((resolve, reject)=> {
+		var busboy = new Busboy({ headers: ctx.req.headers });
+		let photoPath;
+
+		busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+			let saveTo = path.resolve('uploads','photos',filename);
+			photoPath = '/photos/' + filename;
+
+			file.pipe(fs.createWriteStream(saveTo));
+
+			/*file.on('data', function(data) {
+				// console.log('File [' + fieldname + '] got ' + data.length + ' bytes');
+				fs.writeFile(absPath, data);
+			});
+
+			file.on('end', function() {
+				console.log('File [' + fieldname + '] Finished');
+			});*/
+		});
+
+		/*busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
+		 console.log('Field [' + fieldname + ']: value: ' + val);
+		 });*/
+
+		busboy.on('finish', async function() {
+			let res = await userDao.update({name: ctx.session.username}, {
+				$set: {
+					photo: photoPath
+				}
+			});
+			if(res.ok){
+				resolve(photoPath);
+			}
+		});
+
+		ctx.req.pipe(busboy);
+	});
+
+	if(photoPath){
+		ctx.success({
+			data: photoPath
+		});
+	}
 });
 
 
