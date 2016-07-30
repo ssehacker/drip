@@ -16,3 +16,11 @@ add these line to `/etc/hosts`:
 在Mac上,nginx的路径是:
 - `conf`:`/usr/local/etc/nginx/`
 - `log`: `usr/local/var/log/nginx/`
+
+#### 文件上传大小限制:
+在http模块中,配置文件上传的大小:
+```nginx
+client_max_body_size 2m;
+```
+不然会返回 413 (Request Entity Too Large). 
+

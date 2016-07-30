@@ -10,7 +10,7 @@ var logger = log4js.getLogger('runtime');
 import handleMessage from '../app/middleware/handleMessage';
 
 var koaBody = require('koa-body');
-app.use(koaBody({formidable:{uploadDir: __dirname}}));
+app.use(koaBody({formidable:{maxFieldsSize: 10*1024*1024}}));
 
 const session = require('koa-session');
 const convert = require('koa-convert');
