@@ -115,6 +115,17 @@ router.get('/api/:userToken/article/:id', async(ctx, next)=> {
     ctx.success({article});
 });
 
+router.get('/api/:userToken/profile', async(ctx, next)=> {
+    let username = ctx.params.userToken;
+    let user = await userDao.findOne({name: username}, {
+        nick: true,
+        photo: true,
+        resume: true,
+        resumeMD: true,
+        desc: true
+    });
+    ctx.success({user});
+});
 
 //官网模块
 
