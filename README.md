@@ -24,3 +24,13 @@ client_max_body_size 2m;
 ```
 不然会返回 413 (Request Entity Too Large). 
 
+
+
+### git相关
+修复.gitignore修改后不生效
+```git
+git rm -r --cached .
+git add .
+git commit -m "fixed untracked files"
+
+```

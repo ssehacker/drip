@@ -115,6 +115,11 @@ router.get('/api/:userToken/article/:id', async(ctx, next)=> {
     ctx.success({article});
 });
 
+router.get('/api/article', async(ctx, next)=> {
+    let username = ctx.session.username;
+    ctx.redirect('/api/'+username+'/article');
+});
+
 router.get('/api/:userToken/profile', async(ctx, next)=> {
     let username = ctx.params.userToken;
     let user = await userDao.findOne({name: username}, {
