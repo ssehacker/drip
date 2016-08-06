@@ -1,3 +1,3 @@
 module.exports = {
-    cdn: ''
+    cdn: '//1xue.me'
 };

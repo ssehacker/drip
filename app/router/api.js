@@ -97,7 +97,7 @@ router.get('/api/:userToken/article', async(ctx, next)=> {
     let defaultUri = config.cdn + '/public/noimage.gif';
 
     articles.forEach((article)=> {
-        let regRes = article.content.match(/src=\"(https?:\/\/.+\.(gif|png|jpe?g|svg).*?)\"/);
+        let regRes = article.content.match(/<img.*?src=\"(.*?\/\/.+\.(gif|png|jpe?g|svg).*?)\".*?>/);
 
         article.preImg = regRes && regRes[1] || defaultUri;
     });
@@ -263,7 +263,8 @@ router.post('/api/logout', async(ctx, next)=> {
     ctx.success();
 });
 
-//上传图片
+//todo: 将上传头像 和上传图片抽象. 代码有冗余了.
+//上传头像
 router.post('/api/upload/photo', async(ctx, next)=> {
     try {
         let photoPath = await new Promise((resolve, reject)=> {
@@ -279,7 +280,7 @@ router.post('/api/upload/photo', async(ctx, next)=> {
                         if (type && /image\/*/.test(type.mime)) {
                             let newName = uuid.v1() + filename.substring(filename.lastIndexOf('.'), filename.length);
                             saveTo = path.resolve('uploads', 'photos', newName);
-                            photoPath = '/photos/' + newName;
+                            photoPath = config.cdn + '/photos/' + newName;
 
                         } else {
                             reject(Status.FileTypeError);
@@ -318,6 +319,73 @@ router.post('/api/upload/photo', async(ctx, next)=> {
                     });
 
                     res.ok && resolve(photoPath);
+                } else {
+                    reject(Status.UNKNOWN_ERROR);
+                }
+
+            });
+
+            ctx.req.pipe(busboy);
+        });
+
+        ctx.success({
+            data: photoPath
+        });
+    } catch (err) {
+        logger.error(err);
+        ctx.error(err);
+    }
+});
+
+//上传图片
+router.post('/api/upload/image', async(ctx, next)=> {
+    try {
+        let photoPath = await new Promise((resolve, reject)=> {
+            var busboy = new Busboy({headers: ctx.req.headers});
+            let photoPath;
+            const MAX_SIZE = 1024*1024*4; //文件最大4M.
+            busboy.on('file', async function (fieldname, file, filename, encoding, mimetype) {
+                let saveTo, type;
+                let size = 0;
+                file.on('data', (chunk)=> {
+                    if (!type) {
+                        type = fileType(chunk);
+                        if (type && /image\/*/.test(type.mime)) {
+                            let newName = uuid.v1() + filename.substring(filename.lastIndexOf('.'), filename.length);
+                            saveTo = path.resolve('uploads', 'images', newName);
+                            photoPath =config.cdn + '/images/' + newName;
+
+                        } else {
+                            reject(Status.FileTypeError);
+                            return;
+                        }
+                    }
+                    if (type) {
+                        size += chunk.length;
+                        if(size > MAX_SIZE){
+                            fs.unlinkSync(saveTo);
+                            reject(Status.FILE_NO_MORE_THAN_2M);
+                            return;
+                        }
+                        fs.appendFileSync(saveTo, chunk);
+                    }
+                });
+
+                file.on('end', ()=> {
+                    if (photoPath) {
+                        logger.info('File ' + saveTo + ' Finished,' + size + ' bytes');
+                    } else {
+                        reject(Status.UNKNOWN_ERROR);
+                    }
+
+                });
+
+            });
+
+            busboy.on('finish', async function () {
+
+                if (photoPath) {
+                    resolve(photoPath);
                 } else {
                     reject(Status.UNKNOWN_ERROR);
                 }

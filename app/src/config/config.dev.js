@@ -1,3 +1,3 @@
 module.exports = {
-    cdn: '' //'' is equals to <current domain>;
+    cdn: '//1xue.me:8000'
 };
