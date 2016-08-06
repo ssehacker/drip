@@ -68,6 +68,42 @@ router.post('/api/article', async(ctx, next)=> {
     ctx.success();
 });
 
+//todo 只允许删除username 为自己的, mongoose join !!!important!!!!!
+router.delete('/api/article/:id', async(ctx, next)=> {
+    let username = ctx.session.username;
+    let id = ctx.params.id;
+    let res = await articleDao.remove({
+        _id: id
+    });
+    console.log('res.result.ok===', res.result.ok);
+    ctx.success();
+});
+
+//todo 只允许更新自己的文章.
+router.put('/api/article/:id', async(ctx, next)=> {
+    let username = ctx.session.username;
+    let id = ctx.params.id;
+    let body = ctx.request.body;
+    let title = body.title;
+    let markdown = body.content;
+    let content = md.render(markdown);
+
+    let res = await articleDao.update({
+        // name: username,
+        _id: id
+    }, {
+        $set: {
+            lastUpdate: Date.now(),
+            title: title,
+            markdown: markdown,
+            content: content
+        }
+    });
+    console.log('res==', res);
+    ctx.success();
+
+});
+
 router.get('/api/:userToken/article', async(ctx, next)=> {
     if (isQueryBodyNull(ctx)) {
         return;
@@ -89,7 +125,13 @@ router.get('/api/:userToken/article', async(ctx, next)=> {
     }
 
     //todo: 这里需要优化,应该直接从数据库中过滤, 而不是查出来之后再过滤,当数据量大的时候这里需要优化
-    let articles = await articleDao.find({}, {}, {limit: pageSize, skip: pageSize * (currentPage - 1)});
+    let articles = await articleDao.find({}, {}, {
+        limit: pageSize,
+        skip: pageSize * (currentPage - 1),
+        sort: {
+            createDate: -1
+        }
+    });
     articles = _.filter(articles, (article)=> {
         return article.user.name === username;
     });
