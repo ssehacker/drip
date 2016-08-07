@@ -50,7 +50,7 @@ class DBMgmt {
             content: String,
             tags: [],
             user: { type: Schema.Types.ObjectId, ref: 'User' },
-            viewCount: Number,
+            viewCount: {type: Number, default: 0},
             createDate: {type: Number, default: Date.now()},
             lastUpdate: {type: Number, default: Date.now()}
         }));

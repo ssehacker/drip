@@ -171,7 +171,11 @@ router.get('/api/:userToken/article', async(ctx, next)=> {
 router.get('/api/:userToken/article/:id', async(ctx, next)=> {
     let username = ctx.params.userToken;
     let id = ctx.params.id;
-
+    await articleDao.update({_id: id},{
+        $inc: {
+            viewCount: 1
+        }
+    });
     let article = await articleDao.findOne({_id: id});
     ctx.success({article});
 });
