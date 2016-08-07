@@ -12,8 +12,19 @@ import path from 'path';
 import fs from 'fs';
 import uuid from 'node-uuid';
 import fileType from 'file-type';
+var hljs = require('highlight.js');
+
 
 var md = require('markdown-it')({
+    highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+            try {
+                return hljs.highlight(lang, str).value;
+            } catch (__) {}
+        }
+
+        return ''; // use external default escaping
+    },
     breaks: true
 });
 import _ from 'underscore';

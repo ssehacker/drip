@@ -24,6 +24,7 @@
   "dependencies": {
     "busboy": "^0.2.13",
     "file-type": "^3.8.0",
+    "highlight.js": "^9.5.0",
     "jade": "^1.11.0",
     "koa": "^2.0.0",
     "koa-async-body": "^1.0.4",
