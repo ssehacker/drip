@@ -105,35 +105,38 @@ router.put('/api/article/:id', async(ctx, next)=> {
 });
 
 router.get('/api/:userToken/article', async(ctx, next)=> {
-    if (isQueryBodyNull(ctx)) {
-        return;
-    }
+    let maxPageSize = 30, defaultPageSize = 10;
+
+    let query = ctx.request.query;
 
     let username = ctx.params.userToken;
+    let user = await userDao.findOne({name: username});
 
-    let maxPageSize = 30, defaultPageSize = 10;
-    let maxCount = await articleDao.count({});
+    //pageSize
+    let pageSize = parseInt(query.pageSize) || defaultPageSize;
 
-    let body = ctx.request.body;
-    let currentPage = parseInt(body.currentPage) || 1;
-    if (currentPage < 1 || currentPage > maxCount) {
-        currentPage = 1;
-    }
-    let pageSize = parseInt(body.pageSize) || defaultPageSize;
+    
     if (pageSize > maxPageSize || pageSize < 5) {
         pageSize = defaultPageSize;
     }
 
-    //todo: 这里需要优化,应该直接从数据库中过滤, 而不是查出来之后再过滤,当数据量大的时候这里需要优化
-    let articles = await articleDao.find({}, {}, {
+    //currentPage
+    let currentPage = parseInt(query.currentPage) || 1;
+    let totalCount = await articleDao.count({user: {
+        _id: user._id
+    }});
+    
+    let pageCount = Math.ceil(totalCount/pageSize);
+    if (currentPage < 1 || currentPage > pageCount) {
+        currentPage = 1;
+    }
+
+    let articles = await articleDao.find({user: user._id}, {}, {
         limit: pageSize,
         skip: pageSize * (currentPage - 1),
         sort: {
             createDate: -1
         }
-    });
-    articles = _.filter(articles, (article)=> {
-        return article.user.name === username;
     });
 
     let defaultUri = config.cdn + '/public/noimage.gif';
@@ -144,7 +147,10 @@ router.get('/api/:userToken/article', async(ctx, next)=> {
         article.preImg = regRes && regRes[1] || defaultUri;
     });
     ctx.success({
-        articles
+        articles,
+        pageCount,
+        currentPage,
+        pageSize
     });
 
 });
@@ -159,7 +165,8 @@ router.get('/api/:userToken/article/:id', async(ctx, next)=> {
 
 router.get('/api/article', async(ctx, next)=> {
     let username = ctx.session.username;
-    ctx.redirect('/api/'+username+'/article');
+    let newUrl = ctx.url.replace(/^\/api/, '/api/'+username);
+    ctx.redirect(newUrl);
 });
 
 router.get('/api/:userToken/profile', async(ctx, next)=> {
