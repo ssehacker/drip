@@ -12,6 +12,10 @@ let status = {
         code: -2,
         msg: '未知错误'
     },
+    PARAMS_ERROR: {
+        code: -3,
+        msg: '请求阐述错误'
+    },
     USER_VALIDATE_ERROR: {
         code: -101,
         msg: '用户名或密码不合法'

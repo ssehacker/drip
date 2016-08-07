@@ -176,6 +176,8 @@ router.get('/api/:userToken/profile', async(ctx, next)=> {
         photo: true,
         resume: true,
         resumeMD: true,
+        contact: true,
+        contactMD: true,
         desc: true
     });
     ctx.success({user});
@@ -259,14 +261,22 @@ router.put('/api/user/', async(ctx, next)=> {
 router.patch('/api/user', async(ctx, next)=> {
     let name = ctx.session.username;
     let body = ctx.request.body;
-    let resumeMD = body.resumeMD;
+    const fields = ['resumeMD', 'contactMD'];
+
+    let fieldName = body.fieldName;
+    let fieldValue = body.fieldValue;
+
+    if(fields.indexOf(fieldName)===-1){
+        ctx.error(Status.PARAMS_ERROR);
+        return;
+    }
 
     try {
-        let resume = md.render(resumeMD);
+        let fieldValueHtml = md.render(fieldValue);
         let res = await userDao.update({name: name}, {
             $set: {
-                resumeMD: resumeMD,
-                resume: resume
+                [`${fieldName}`]: fieldValue,
+                [`${fieldName.replace('MD','')}`]: fieldValueHtml
             }
         });
         ctx.success();

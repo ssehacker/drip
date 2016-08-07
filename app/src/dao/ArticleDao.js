@@ -56,27 +56,6 @@ class ArticleDao extends ModelDao{
         return record;
     }
 
-    // async count(condition) {
-    //     let count =0;
-    //     try{
-    //         count = await new Promise((resolve, reject)=> {
-	//
-    //             this.model.count(condition)
-    //                 .lean()
-    //                 .exec((err, count)=>{
-    //                     if(err){
-    //                         reject(err);
-    //                         return;
-    //                     }
-    //                     resolve(count);
-    //                 });
-    //         });
-    //     }catch (err){
-    //         throw err;
-    //     }
-    //     return count;
-    // }
-
 }
 
 export default ArticleDao;
