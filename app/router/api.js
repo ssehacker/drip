@@ -12,6 +12,8 @@ import path from 'path';
 import fs from 'fs';
 import uuid from 'node-uuid';
 import fileType from 'file-type';
+import util from '../src/util/util';
+
 var hljs = require('highlight.js');
 
 
@@ -177,6 +179,10 @@ router.get('/api/:userToken/article/:id', async(ctx, next)=> {
 router.get('/api/article', async(ctx, next)=> {
     let username = ctx.session.username;
     let newUrl = ctx.url.replace(/^\/api/, '/api/'+username);
+
+   //mock delay
+   //  util.sleep(4000);
+
     ctx.redirect(newUrl);
 });
 
