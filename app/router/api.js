@@ -296,6 +296,8 @@ router.get('/api/user', async(ctx, next)=> {
             photo: true,
             resume: true,
             resumeMD: true,
+            contact: true,
+            contactMD: true,
             desc: true,
             domain: true
         }
