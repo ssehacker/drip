@@ -274,7 +274,7 @@ router.put('/api/user/', async(ctx, next)=> {
         res = await userDao.update({name: username}, {
             $set: {
                 nick: nick,
-                domain: domain,
+                // domain: domain, //暂时不支持domain的修改
                 desc: desc
             }
         });
