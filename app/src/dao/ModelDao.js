@@ -12,9 +12,9 @@ class ModelDao {
         this.model = db.getModels()[modelName];
     }
 
-    async insert(users){
+    async insert(entities){
         let res = await new Promise((resolve, reject)=>{
-            this.model.create(users, function(err, res){
+            this.model.create(entities, function(err, res){
                 if(err){
                     logger.error(err);
                     reject( err);
