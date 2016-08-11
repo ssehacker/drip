@@ -123,7 +123,7 @@ router.get('/api/:userToken/article', async(ctx, next)=> {
     let query = ctx.request.query;
 
     let username = ctx.params.userToken;
-    let user = await userDao.findOne({name: username});
+    let user = await userDao.findOne({domain: username.toLowerCase()});
 
     //pageSize
     let pageSize = parseInt(query.pageSize) || defaultPageSize;
@@ -192,7 +192,7 @@ router.get('/api/article', async(ctx, next)=> {
 
 router.get('/api/:userToken/profile', async(ctx, next)=> {
     let username = ctx.params.userToken;
-    let user = await userDao.findOne({name: username}, {
+    let user = await userDao.findOne({domain: username.toLowerCase()}, {
         nick: true,
         photo: true,
         resume: true,
@@ -222,6 +222,8 @@ function activeUser(ctx, username) {
 router.post('/api/user', async(ctx, next)=> {
     let body = ctx.request.body;
     let username = body.username;
+    let domain = username && username.toLowerCase();
+
     let password = body.password;
     const photo='/photos/default-photo.jpeg';
 
@@ -240,7 +242,8 @@ router.post('/api/user', async(ctx, next)=> {
         await userDao.insert({
             name: username,
             password: password,
-            photo: photo
+            photo: photo,
+            domain: domain
         });
 
         activeUser(ctx, username);
