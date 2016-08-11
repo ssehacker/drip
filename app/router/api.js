@@ -88,7 +88,7 @@ router.delete('/api/article/:id', async(ctx, next)=> {
     let res = await articleDao.remove({
         _id: id
     });
-    console.log('res.result.ok===', res.result.ok);
+    // console.log('res.result.ok===', res.result.ok);
     ctx.success();
 });
 
@@ -112,7 +112,7 @@ router.put('/api/article/:id', async(ctx, next)=> {
             content: content
         }
     });
-    console.log('res==', res);
+    // console.log('res==', res);
     ctx.success();
 
 });
@@ -123,6 +123,8 @@ router.get('/api/:userToken/article', async(ctx, next)=> {
     let query = ctx.request.query;
 
     let username = ctx.params.userToken;
+    // console.log('username==', username);
+
     let user = await userDao.findOne({domain: username.toLowerCase()});
 
     //pageSize
@@ -224,8 +226,9 @@ router.post('/api/user', async(ctx, next)=> {
     let username = body.username;
     let domain = username && username.toLowerCase();
 
+    // console.log('domain', domain);
     let password = body.password;
-    const photo='/photos/default-photo.jpeg';
+    const photo=config.cdn  + '/photos/default-photo.jpeg';
 
     if (!validateUser(username, password)) {
         ctx.error(Status.USER_VALIDATE_ERROR);
@@ -241,6 +244,7 @@ router.post('/api/user', async(ctx, next)=> {
     try {
         await userDao.insert({
             name: username,
+            nick: username,
             password: password,
             photo: photo,
             domain: domain
