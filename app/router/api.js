@@ -13,6 +13,8 @@ import fs from 'fs';
 import uuid from 'node-uuid';
 import fileType from 'file-type';
 import util from '../src/util/util';
+import _ from 'underscore';
+
 
 var hljs = require('highlight.js');
 
@@ -29,7 +31,6 @@ var md = require('markdown-it')({
     },
     breaks: true
 });
-import _ from 'underscore';
 
 
 let config = require('../src/util/loadConfig')();
@@ -75,6 +76,8 @@ router.post('/api/article', async(ctx, next)=> {
         markdown,
         viewCount,
         tags,
+        createDate: Date.now(),
+        lastUpdate: Date.now(),
         user: user._id
     });
 
@@ -247,7 +250,9 @@ router.post('/api/user', async(ctx, next)=> {
             nick: username,
             password: password,
             photo: photo,
-            domain: domain
+            domain: domain,
+            createDate: Date.now(),
+            lastUpdate: Date.now()
         });
 
         activeUser(ctx, username);
@@ -275,7 +280,8 @@ router.put('/api/user/', async(ctx, next)=> {
             $set: {
                 nick: nick,
                 // domain: domain, //暂时不支持domain的修改
-                desc: desc
+                desc: desc,
+                lastUpdate: Date.now()
             }
         });
         ctx.success();
@@ -304,7 +310,8 @@ router.patch('/api/user', async(ctx, next)=> {
         let res = await userDao.update({name: name}, {
             $set: {
                 [`${fieldName}`]: fieldValue,
-                [`${fieldName.replace('MD','')}`]: fieldValueHtml
+                [`${fieldName.replace('MD','')}`]: fieldValueHtml,
+                lastUpdate: Date.now()
             }
         });
         ctx.success();
