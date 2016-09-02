@@ -148,7 +148,13 @@ router.get('/api/:userToken/article', async(ctx, next)=> {
     
     let pageCount = Math.ceil(totalCount/pageSize);
     if (currentPage < 1 || currentPage > pageCount) {
-        currentPage = 1;
+        ctx.success({
+            articles: [],
+            pageCount,
+            currentPage,
+            pageSize
+        });
+        return;
     }
 
     let articles = await articleDao.find({user: user._id}, {}, {
