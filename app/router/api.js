@@ -347,9 +347,9 @@ router.post('/api/login', async(ctx, next)=> {
     let username = body.username;
     let password = body.password;
 
-    //todo: password sha2
-    let user = await userDao.findOne({name: username, password: password});
-    if (!user) {
+    let isLegal = await userDao.checkUser(username, password);
+    
+    if (!isLegal) {
         ctx.error(Status.AUTH_FAILED);
         return;
     }
