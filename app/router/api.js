@@ -12,9 +12,7 @@ import path from 'path';
 import fs from 'fs';
 import uuid from 'node-uuid';
 import fileType from 'file-type';
-import util from '../src/util/util';
-import _ from 'underscore';
-
+import userAuth from '../middleware/userAuth';
 
 var hljs = require('highlight.js');
 
@@ -46,6 +44,8 @@ function isQueryBodyNull(ctx) {
         });
     }
 }
+
+router.use('/api', userAuth);
 
 router.post('/api/article', async(ctx, next)=> {
     if (!ctx.session.username) {
@@ -85,6 +85,7 @@ router.post('/api/article', async(ctx, next)=> {
 });
 
 //todo 只允许删除username 为自己的, mongoose join !!!important!!!!!
+// 需要权限
 router.delete('/api/article/:id', async(ctx, next)=> {
     let username = ctx.session.username;
     let id = ctx.params.id;
@@ -95,7 +96,7 @@ router.delete('/api/article/:id', async(ctx, next)=> {
     ctx.success();
 });
 
-//todo 只允许更新自己的文章.
+// 需要权限
 router.put('/api/article/:id', async(ctx, next)=> {
     let username = ctx.session.username;
     let id = ctx.params.id;
@@ -119,6 +120,7 @@ router.put('/api/article/:id', async(ctx, next)=> {
     ctx.success();
 
 });
+
 
 router.get('/api/:userToken/article', async(ctx, next)=> {
     let maxPageSize = 30, defaultPageSize = 10;
@@ -185,6 +187,7 @@ router.get('/api/:userToken/article/:id', async(ctx, next)=> {
     ctx.success({article});
 });
 
+// 需要权限
 router.get('/api/article', async(ctx, next)=> {
     let username = ctx.session.username;
     let newUrl = ctx.url.replace(/^\/api/, '/api/'+username);
@@ -194,6 +197,7 @@ router.get('/api/article', async(ctx, next)=> {
 
     ctx.redirect(newUrl);
 });
+
 
 router.get('/api/:userToken/profile', async(ctx, next)=> {
     let username = ctx.params.userToken;
@@ -208,8 +212,6 @@ router.get('/api/:userToken/profile', async(ctx, next)=> {
     });
     ctx.success({user});
 });
-
-//官网模块
 
 //todo: username should be email.
 function validateUser(username, password) {
@@ -266,8 +268,8 @@ router.post('/api/user', async(ctx, next)=> {
 
 });
 
-//todo 验证用户是否登录
-router.put('/api/user/', async(ctx, next)=> {
+// 需要权限
+router.put('/api/user', async(ctx, next)=> {
     let body = ctx.request.body;
     let username = body.name;
     let nick = body.nick;
@@ -291,7 +293,7 @@ router.put('/api/user/', async(ctx, next)=> {
 
 });
 
-//todo 验证用户是否登录
+// 需要权限
 router.patch('/api/user', async(ctx, next)=> {
     let name = ctx.session.username;
     let body = ctx.request.body;
@@ -321,7 +323,7 @@ router.patch('/api/user', async(ctx, next)=> {
 
 });
 
-//todo 验证用户是否登录
+// 需要权限
 router.get('/api/user', async(ctx, next)=> {
     let username = ctx.session.username;
     let user = await userDao.findOne({name: username},
@@ -358,6 +360,7 @@ router.post('/api/login', async(ctx, next)=> {
     ctx.success();
 });
 
+// 需要权限
 router.post('/api/logout', async(ctx, next)=> {
     ctx.session.username = undefined;
     delete ctx.session.username;

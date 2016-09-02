@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 let crypto = require('crypto');
 function encrypt(password){
 	let solt = 'toBeAFreeMan';
@@ -7,6 +7,6 @@ function encrypt(password){
 	let code = hash.digest('hex');
 
 	return code;
-};
+}
 
 console.log(encrypt('ssehacker'));
