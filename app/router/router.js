@@ -1,34 +1,32 @@
-'use strict';
+import koaRouter from 'koa-router';
+import log4js from 'log4js';
+import loadConfig from '../src/util/loadConfig';
 
-var router = require('koa-router')();
-var logger = require('log4js').getLogger('runtime');
-let config = require('../src/util/loadConfig')();
+const logger = log4js.getLogger('runtime');
+const config = loadConfig();
 
-router.get('/', async (ctx, next) =>{
-	await ctx.render('index.jade', {
-		host: config.cdn
-	});
+const router = koaRouter();
+router.get('/', async (ctx) => {
+  await ctx.render('index.jade', {
+    host: config.cdn,
+  });
 });
 
-router.get('/admin', async (ctx, next) =>{
-	logger.info('ctx.session.username===', ctx.session.username);
-	
-	if(!ctx.session.username){
-		ctx.redirect('/');
-	}
-	await ctx.render('admin.jade', {
-		host: config.cdn
-	});
+router.get('/admin', async (ctx) => {
+  logger.info('ctx.session.username===', ctx.session.username);
+  if (!ctx.session.username) {
+    ctx.redirect('/');
+  }
+  await ctx.render('admin.jade', {
+    host: config.cdn,
+  });
 });
 
-router.get('/:userid', async (ctx, next) =>{
-	// console.log('ctx.params.userid==', ctx.params.userid);
-	await ctx.render('theme.jade', {
-		host: config.cdn
-	});
+router.get('/:userid', async (ctx) => {
+  // console.log('ctx.params.userid==', ctx.params.userid);
+  await ctx.render('theme.jade', {
+    host: config.cdn,
+  });
 });
 
-
-
-
-module.exports= router;
+export default router;

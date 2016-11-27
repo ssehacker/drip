@@ -1,3 +1,3 @@
-module.exports = {
-    cdn: '//1xue.me:8000'
+export default {
+  cdn: '//1xue.me:8000',
 };

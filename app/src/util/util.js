@@ -1,22 +1,22 @@
 /**
  * Created by ssehacker on 16/8/7.
  */
-let util = {};
 import crypto from 'crypto';
 
-util.sleep = function(ms){
-	let later = Date.now()+ms;
-	while(Date.now()< later){
-		
-	}
+const util = {};
+util.sleep = (ms) => {
+  const later = Date.now() + ms;
+  while (Date.now() < later) {
+    /* empty */
+  }
 };
 
-util.encrypt = function (password){
-	let solt = 'toBeAFreeMan';
-	let hash = crypto.createHash('sha256');
-	hash.update(password);
-	let code = hash.digest('hex');
-	return code;
+util.encrypt = (password) => {
+  // let solt = 'toBeAFreeMan';
+  const hash = crypto.createHash('sha256');
+  hash.update(password);
+  const code = hash.digest('hex');
+  return code;
 };
 
 export default util;

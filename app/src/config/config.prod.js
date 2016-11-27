@@ -1,3 +1,3 @@
-module.exports = {
-    cdn: '//1xue.me'
+export default {
+  cdn: '//1xue.me',
 };
