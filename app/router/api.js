@@ -9,7 +9,7 @@ import userApi from './api/userApi';
 import articleApi from './api/articleApi';
 import uploadFile from './api/uploadFile';
 import loadConfig from '../src/util/loadConfig';
-
+import urlProxy from '../middleware/urlProxy';
 
 const router = koaRouter();
 // const logger = log4js.getLogger('runtime');
@@ -19,6 +19,7 @@ const config = loadConfig();
 const articleDao = new ArticleDao();
 const userDao = new UserDao();
 
+router.use('/', urlProxy);
 router.use('/api', userAuth);
 
 router.get('/api/:userToken/article', async (ctx) => {

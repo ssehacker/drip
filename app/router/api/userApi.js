@@ -8,6 +8,7 @@ import koaRouter from 'koa-router';
 import UserDao from '../../src/dao/UserDao';
 import Status from '../../src/Status';
 import loadConfig from '../../src/util/loadConfig';
+import util from '../../src/util/util';
 
 const router = koaRouter();
 const logger = log4js.getLogger('runtime');
@@ -65,7 +66,7 @@ router.post('/api/user', async (ctx) => {
     await userDao.insert({
       name: username,
       nick: username,
-      password,
+      password: util.encrypt(password),
       photo,
       domain,
       createDate: Date.now(),
