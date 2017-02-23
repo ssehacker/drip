@@ -8,6 +8,11 @@ const hosts = [
     customHost: 'zhouyongblog.com',
     username: 'zhouyong',
   },
+  {
+    host: 'zhouyong3.1xue.me',
+    customHost: 'firstblood.me',
+    username: 'zhouyong3',
+  },
 ];
 
 const BINDING_HOST = '1xue.me';
