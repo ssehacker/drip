@@ -9,7 +9,7 @@ import userApi from './api/userApi';
 import articleApi from './api/articleApi';
 import uploadFile from './api/uploadFile';
 import loadConfig from '../src/util/loadConfig';
-import urlProxy from '../middleware/urlProxy';
+// import urlProxy from '../middleware/urlProxy';
 
 const router = koaRouter();
 // const logger = log4js.getLogger('runtime');
@@ -19,16 +19,16 @@ const config = loadConfig();
 const articleDao = new ArticleDao();
 const userDao = new UserDao();
 
-router.use('/', urlProxy);
+// router.use('/', urlProxy);
 router.use('/api', userAuth);
 
-router.get('/api/:userToken/article', async (ctx) => {
+router.get('/api/article', async (ctx) => {
   const maxPageSize = 30;
   const defaultPageSize = 10;
 
   const query = ctx.request.query;
 
-  const username = ctx.params.userToken;
+  const username = query.username;
   // console.log('username==', username);
 
   const user = await userDao.findOne({
@@ -86,7 +86,7 @@ router.get('/api/:userToken/article', async (ctx) => {
   });
 });
 
-router.get('/api/:userToken/article/:id', async (ctx) => {
+router.get('/api/article/:id', async (ctx) => {
   // const username = ctx.params.userToken;
   const id = ctx.params.id;
   await articleDao.update({ _id: id }, {
@@ -98,8 +98,8 @@ router.get('/api/:userToken/article/:id', async (ctx) => {
   ctx.success({ article });
 });
 
-router.get('/api/:userToken/profile', async (ctx) => {
-  const username = ctx.params.userToken;
+router.get('/api/users/:username', async (ctx) => {
+  const username = ctx.params.username;
   const user = await userDao.findOne({
     domain: username.toLowerCase(),
   }, {

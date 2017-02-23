@@ -110,14 +110,15 @@ router.put('/api/article/:id', async (ctx) => {
 });
 
 // 需要权限
-router.get('/api/article', async (ctx) => {
+router.get('/api/article', async (ctx, next) => {
   const username = ctx.session.username;
-  const newUrl = ctx.url.replace(/^\/api/, `/api/${username}`);
+  ctx.query.username = username;
+  ctx.url = ctx.url.replace(/^\/api/, `/api/${username}`);
 
   // mock delay
   //  util.sleep(4000);
-
-  ctx.redirect(newUrl);
+  await next();
+  // ctx.redirect(newUrl);
 });
 
 export default router;

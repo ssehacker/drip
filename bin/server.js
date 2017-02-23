@@ -7,7 +7,9 @@ import convert from 'koa-convert';
 import views from 'koa-views';
 import serve from 'koa-static';
 import handleMessage from '../app/middleware/handleMessage';
-import router from '../app/router/router';
+// import router from '../app/router/router';
+import apis from '../app/router/api';
+import urlProxy from '../app/middleware/urlProxy';
 
 const app = new Koa();
 log4js.loadAppender('file');
@@ -59,11 +61,12 @@ app.use(async (ctx, next) => {
   logger.info(`X-Response-Time: ${ms} ms`);
 });
 
-app.use(require('../app/router/api.js').routes());
+app.use(urlProxy);
 
 app
-  .use(router.routes())
-  .use(router.allowedMethods());
+  .use(apis.routes())
+  // .use(router.routes())
+  .use(apis.allowedMethods());
 
 app.listen(9090);
 

@@ -15,10 +15,6 @@ const requestsNeedAuth = [
     method: 'PUT',
   },
   {
-    path: '/api/article',
-    method: 'GET',
-  },
-  {
     path: '/api/user',
     method: 'PUT',
   },

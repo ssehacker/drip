@@ -22,7 +22,7 @@ router.get('/admin', async (ctx) => {
   });
 });
 
-router.get('/:userid', async (ctx) => {
+router.get('/u/:userid', async (ctx) => {
   // console.log('ctx.params.userid==', ctx.params.userid);
   await ctx.render('theme.jade', {
     host: config.cdn,
