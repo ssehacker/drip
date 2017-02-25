@@ -13,6 +13,7 @@ export default async (ctx, next) => {
   const USER_NAME = 'x-username';
   let url = ctx.originalUrl;
 
+  console.log(`from: ${currentHost + url}`);
   if (!/^\/api/.test(url)) {
     await next();
     return;

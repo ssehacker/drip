@@ -58,7 +58,7 @@ app.use(async (ctx, next) => {
   await next();
   const ms = new Date() - start;
   ctx.set('X-Response-Time', `${ms}ms`);
-  logger.info(`X-Response-Time: ${ms} ms`);
+  logger.info(`X-Response-Time: ${ms} ms  ${ctx.method}  ${ctx.path}  ${ctx.status}`);
 });
 
 app.use(urlProxy);
