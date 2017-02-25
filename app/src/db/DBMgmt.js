@@ -34,6 +34,7 @@ class DBMgmt {
       contact: String,
       contactMD: String,
       domain: String,
+      customDomain: String,
       createDate: { type: Number, default: Date.now() },
       lastUpdate: { type: Number, default: Date.now() },
     }));

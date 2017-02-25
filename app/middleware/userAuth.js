@@ -37,7 +37,7 @@ function match(path, method) {
 }
 
 export default async function (ctx, next) {
-  console.log('==========middleware', ctx.path, ctx.method);
+  console.log(ctx.method, ctx.path);
   if (match(ctx.path, ctx.method) && !ctx.session.username) {
     ctx.error(Status.USER_AUTH_FAILED);
     return;

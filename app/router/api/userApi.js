@@ -85,7 +85,7 @@ router.put('/api/user', async (ctx) => {
   const body = ctx.request.body;
   const username = body.name;
   const nick = body.nick;
-  // let domain = body.domain;
+  const customDomain = body.customDomain;
   const desc = body.desc;
   // let res;
 
@@ -93,7 +93,7 @@ router.put('/api/user', async (ctx) => {
     await userDao.update({ name: username }, {
       $set: {
         nick,
-        // domain: domain, //暂时不支持domain的修改
+        customDomain,
         desc,
         lastUpdate: Date.now(),
       },
@@ -148,6 +148,7 @@ router.get('/api/user', async (ctx) => {
       contactMD: true,
       desc: true,
       domain: true,
+      customDomain: true,
     },
   );
   ctx.success({
